@@ -10,8 +10,8 @@ app.use(express.json())
 
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
+const { ObjectID } = require('bson')
 const uri = `mongodb+srv://${process.env.USER_NAME}:${process.env.USER_PASSWORD}@cluster0.yhrwxpk.mongodb.net/?retryWrites=true&w=majority`;
-console.log(uri)
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 
@@ -33,6 +33,13 @@ async function run(){
             const cursor = servicesCollection.find(query)
             const result = await cursor.toArray()
             res.send(result)
+        })
+
+        app.get('/services/:id', async (req, res)=>{
+            const id = req.params.id
+            const query = {_id: ObjectID(id)}
+            const cursor = await servicesCollection.findOne(query)
+            res.send(cursor)
         })
 
 
