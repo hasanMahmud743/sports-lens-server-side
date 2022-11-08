@@ -19,11 +19,30 @@ async function run(){
 
     try{
         const servicesCollection = client.db('sports-lance').collection('services-collection')
+        const reviewCollection = client.db('sports-lance').collection('review-collection')
 
         app.get('/', async(req, res)=>{
-            const query = {}
+            let query = {}
             const cursor = servicesCollection.find(query)
             const result = await cursor.limit(3).toArray()
+            res.send(result)
+        })
+
+        app.post('/services', async(req, res)=>{
+            const review = req.body
+            const result = reviewCollection.insertOne(review)
+            res.send(result)
+        })
+
+        app.get('/review', async(req, res)=>{
+            let query = {}
+            if(req.query.title){
+                query={
+                    title: req.query.title
+                }
+            }
+            const cursor = reviewCollection.find(query)
+            const result = await cursor.toArray()
             res.send(result)
         })
 
