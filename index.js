@@ -48,7 +48,7 @@ async function run(){
                     email: req.query.email
                 }
             }
-            console.log(req.query.email)
+            // console.log(req.query.email)
             const cursor = reviewCollection.find(query)
             const result = await cursor.toArray()
             res.send(result)
