@@ -11,6 +11,7 @@ app.use(express.json())
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const { ObjectID } = require('bson')
+const { response } = require('express')
 const uri = `mongodb+srv://${process.env.USER_NAME}:${process.env.USER_PASSWORD}@cluster0.yhrwxpk.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
@@ -30,7 +31,7 @@ async function run(){
 
         app.post('/services', async(req, res)=>{
             const review = req.body
-            const result = reviewCollection.insertOne(review)
+            const result = await reviewCollection.insertOne(review)
             res.send(result)
         })
 
@@ -54,6 +55,14 @@ async function run(){
             res.send(result)
         })
 
+        app.delete('/review/:id', async (req, res)=>{
+            const id = req.params.id
+            const query = {_id: ObjectID(id)}
+            const result = await reviewCollection.deleteOne(query)
+            res.send(result)
+
+        })
+
 
         app.get('/services', async(req, res)=>{
             const query = {}
@@ -67,6 +76,20 @@ async function run(){
             const query = {_id: ObjectID(id)}
             const cursor = await servicesCollection.findOne(query)
             res.send(cursor)
+        })
+
+
+        app.patch('/review/:id',   async(req, res)=>{
+            const id = req.params.id
+            const text = req.body.text
+            const query = {_id: ObjectID(id)}
+            const updatedDoc = {
+                $set:{
+                   text : text,
+                }
+            }
+            const result = await reviewCollection.updateOne(query, updatedDoc)
+            res.send(result)
         })
 
 
