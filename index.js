@@ -16,21 +16,22 @@ const { response } = require('express')
 const uri = `mongodb+srv://${process.env.USER_NAME}:${process.env.USER_PASSWORD}@cluster0.yhrwxpk.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
+
 const verifiedJWT = (req, res, next)=>{
     const authHeader = req.headers.authorization
 
     if(!authHeader){
-        return res.status(401).send({message: 'Unauthoriz access'})
+        return res.status(401).send({message: 'unauthorized access'})
     }
 
-    console.log(authHeader)
+  
 
     const token  = authHeader.split(' ')[1]
-    // console.log(token)
+    console.log(token)
 
     jwt.verify(token, process.env.TOKEN_SECRET, function(err, decoded){
         if(err){
-            res.status(401).send({message: 'unauthor access'})
+            return  res.status(401).send({message: 'unauthorized access'})
         }
         req.decoded = decoded
         next()
@@ -83,7 +84,7 @@ async function run(){
 
             if(decoded.email !== req.query.email){
                 console.log('wrong ')
-                //  res.status(401).send({message: 'Unauthoriz access'})
+                return res.status(401).send({message: 'unauthorized access'})
 
             }
 
