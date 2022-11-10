@@ -80,8 +80,6 @@ async function run(){
             const decoded = req.decoded
             console.log(decoded.email, req.query.email)
 
-           
-
             if(decoded.email !== req.query.email){
                 console.log('wrong ')
                 return res.status(401).send({message: 'unauthorized access'})
@@ -106,6 +104,26 @@ async function run(){
             const result = await cursor.toArray()
             res.send(result)
         })
+
+
+        app.get('/reviews',  async(req, res)=>{
+
+           
+
+            let query = {}
+
+            if(req.query.title){
+                query={
+                    title: req.query.title
+                }
+            }
+
+            console.log(req.query.title, req.query.email)
+            const cursor = reviewCollection.find(query).sort({time: -1})
+            const result = await cursor.toArray()
+            res.send(result)
+        })
+
 
         app.delete('/review/:id', async (req, res)=>{
             const id = req.params.id
